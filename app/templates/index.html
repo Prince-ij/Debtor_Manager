@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    
+    <meta charset="UTF-8"> 
     <title>Debtor Management System</title>
     <style>
         body {
@@ -171,17 +170,16 @@ footer {
                 <li><a href="#contact">Contact</a></li>
 
 		{% if current_user.is_anonymous %}
-            <a href="{{ url_for('login') }}">Login</a>
+		<li><a href="{{ url_for('login') }}">Login</a></li>
             {% else %}
             <a href="{{ url_for('logout') }}">Logout</a>
             {% endif %}	
-                <li><a href="register.html" class="btn">Sign Up</a></li>
             </ul>
         </nav>
         <div class="hero">
             <h2>Manage Your Debts Efficiently</h2>
             <p>Streamline debtor management and payment tracking with DebtMGR.</p>
-            <a href="register.html" class="btn btn-primary">Get Started</a>
+	    <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started</a>
             <button id="color-btn" class="btn">Change Background Color</button>
         </div>
     </header>

@@ -156,10 +156,10 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <ul>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Logout</a></li>
+		<li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+		<li><a href="{{ url_for('profile') }}">Profile</a></li>
+	    <li><a href="{{ url_for('settings') }}">Settings</a></li>
+	    <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
     </div>
     <!-- Main Content -->
@@ -196,7 +196,7 @@
             console.log(formData);
             alert('Debtor added successfully!');
             // Example: Redirect or update UI as needed
-            window.location.href = 'dashboard.html'; // Redirect to dashboard
+		window.location.href = '{{ url_for('dashboard') }}'; // Redirect to dashboard
         }
     </script>
 </body>

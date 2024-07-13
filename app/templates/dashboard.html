@@ -165,10 +165,10 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <ul>
-            <li><a href={{ url_for('index') }}>Home</a></li>
-            <li><a href="profile.html">Profile</a></li>
-            <li><a href="settings.html">Settings</a></li>
-            <li><a href={{ url_for('logout') }}>Logout</a></li>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+	    <li><a href="{{ url_for('profile') }}">Profile</a></li>
+	    <li><a href="{{ url_for('settings') }}">Settings</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
     </div>
     <!-- Main Content -->
@@ -222,13 +222,13 @@
         function addNewDebtor() {
             alert('Redirecting to Add New Debtor page...');
             // Simulate navigation
-            window.location.href = 'add_debtor.html';
+            window.location.href = '{{ url_for('add_debtor') }}';
         }
 
         function viewDebtors() {
             alert('Redirecting to View Debtors page...');
             // Simulate navigation
-            window.location.href = 'view_debtors.html';
+		window.location.href = '{{ url_for('view_debtor') }}';
         }
 
         function changeCardColor(cardId) {
