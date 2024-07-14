@@ -18,8 +18,8 @@ class User(UserMixin, db.Model):
     username: so.Mapped[str] = so.mapped_column(sa.String(64), nullable=False)
     email: so.Mapped[str] = so.mapped_column(sa.String(120), nullable=False, unique=True)
     total_debtors: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
-    address: so.Mapped[str] = so.mapped_column(sa.String(255))
-    phone_number: so.Mapped[str] = so.mapped_column(sa.String(15))
+    address: so.Mapped[str] = so.mapped_column(sa.String(255), nullable=True)
+    phone_number: so.Mapped[str] = so.mapped_column(sa.String(15), nullable=True)
     password_hash: so.Mapped[str] = so.mapped_column(sa.String(256))
     total_amount_due: so.Mapped[float] = so.mapped_column(sa.Float, default=0.0)
 
@@ -30,7 +30,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
-        return f'<User {self.name}>'
+        return f'<User {self.username}>'
 
 class Debtor(db.Model):
     __tablename__ = 'debtors'
@@ -44,6 +44,6 @@ class Debtor(db.Model):
     user: so.Mapped[User] = so.relationship('User', back_populates='debtors')
 
     def __repr__(self):
-        return f'<Debtor {self.name}>'
+        return f'<Debtor {self.username}>'
 
 User.debtors = so.relationship('Debtor', order_by=Debtor.id, back_populates='user')

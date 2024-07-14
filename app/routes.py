@@ -2,6 +2,7 @@ from app import app, db
 import sqlalchemy as sa
 from flask_login import login_required
 from flask import render_template, flash, redirect, url_for
+from flask import request
 from app.forms import LoginForm
 from flask_login import current_user, login_user, logout_user
 from app.models import User, Debtor
@@ -15,31 +16,50 @@ def index():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = db.session.scalar(
-                sa.select(User).where(User.username == form.username.data))
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid Username or password')
+
+    if request.method == 'POST':
+        email = request.form.get("email")
+        password = request.form.get("password")
+        remember = request.form.get("remember_me") is not None
+
+        user = User.query.filter_by(email=email).first()
+        if user is None or not user.check_password(password):
+            flash('Invalid email or password')
             return redirect(url_for('login'))
-        login_user(user, remember=form.remember_me.data)
+        login_user(user, remember=remember)
         return redirect(url_for('dashboard'))
-    return render_template('login.html', form=form)
+    return render_template('login.html')
 
 
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 @login_required
 @app.route('/dashboard')
 def dashboard():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
     return render_template('dashboard.html')
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
+    if request.method == 'POST':
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
+        if password == confirm_password:
+            user = User(username=username, email=email)
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for('login'))
+        else:
+            return render_template('register.html', error='passwords do not match !')
     return render_template('register.html')
+
 
 @app.route('/profile')
 def profile():
