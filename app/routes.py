@@ -63,7 +63,7 @@ def register():
 
 @app.route('/profile')
 def profile():
-    return render_template('profile.html')
+    return render_template('profile.html', user=current_user)
 
 @app.route('/add_debtor')
 def add_debtor():
@@ -77,6 +77,14 @@ def remove():
 def view_debtor():
     return render_template('view_debtor.html')
 
-@app.route('/settings')
+@app.route('/settings', methods=['GET', 'POST'])
 def settings():
-    return render_template('settings.html')
+    if request.method == 'POST':
+        current_user.username = request.form.get("name")
+        current_user.email = request.form.get("email")
+        current_user.phone_number = request.form.get("phone")
+        current_user.address = request.form.get("address")
+        db.session.commit()
+        flash('Your changes have been saved ')
+        return redirect(url_for('settings'))
+    return render_template('settings.html', user=current_user)

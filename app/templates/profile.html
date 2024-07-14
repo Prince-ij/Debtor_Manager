@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Debtor - Debtor Management System</title>
+    <title>User Profile - Debtor Management System</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -88,40 +88,22 @@
             margin-bottom: 2rem;
         }
 
-        .form {
+        .profile-info {
             background: #fff;
             padding: 2rem;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 600px;
-            text-align: center;
+            text-align: left;
         }
 
-        .form input[type="text"],
-        .form input[type="number"],
-        .form textarea {
-            width: 100%;
-            padding: 0.5rem;
+        .profile-info label {
+            font-weight: bold;
+        }
+
+        .profile-info p {
             margin-bottom: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .form button {
-            background: #007BFF;
-            color: #fff;
-            border: none;
-            padding: 0.75rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-size: 16px;
-        }
-
-        .form button:hover {
-            background: #0056b3;
         }
 
         footer {
@@ -146,7 +128,7 @@
 </head>
 <body>
     <header>
-        <h1>Add New Debtor</h1>
+        <h1>User Profile</h1>
         <div class="menu-icon" onclick="toggleSidebar()">
             <div class="bar"></div>
             <div class="bar"></div>
@@ -156,24 +138,20 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <ul>
-		<li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-		<li><a href="{{ url_for('profile') }}">Profile</a></li>
-		<li><a href="{{ url_for('settings') }}">Settings</a></li>
-		<li><a href="{{ url_for('logout') }}">Logout</a></li>
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('profile') }}">Profile</a></li>
+            <li><a href="{{ url_for('settings') }}">Settings</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
     </div>
     <!-- Main Content -->
     <div class="container">
-        <div class="form">
-            <form id="addDebtorForm" onsubmit="return false;">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
-                <label for="amount">Amount Due:</label>
-                <input type="number" id="amount" name="amount" step="0.01" required>
-                <label for="notes">Notes:</label>
-                <textarea id="notes" name="notes" rows="4"></textarea>
-                <button type="submit" onclick="submitForm()">Add Debtor</button>
-            </form>
+        <div class="profile-info">
+            <h2>Personal Information</h2>
+	    <p><label>Name:</label> {{ user.username }}</p>
+	    <p><label>Email:</label> {{ user.email }}</p>
+	    <p><label>Phone:</label> {{ user.phone_number }}</p>
+	    <p><label>Address:</label> {{ user.address }}</p>
         </div>
     </div>
     <footer>
@@ -185,18 +163,6 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('active');
-        }
-
-        // Example function to handle form submission (replace with actual logic)
-        function submitForm() {
-            const form = document.getElementById('addDebtorForm');
-            // Example: Validate form fields and submit data
-            const formData = new FormData(form);
-            // Example: Send formData to server or perform client-side logic
-            console.log(formData);
-            alert('Debtor added successfully!');
-            // Example: Redirect or update UI as needed
-		window.location.href = "{{ url_for('dashboard') }}"; // Redirect to dashboard
         }
     </script>
 </body>
