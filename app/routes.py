@@ -41,7 +41,10 @@ def logout():
 def dashboard():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    return render_template('dashboard.html')
+   
+    total_amount_due = current_user.total_amount_due
+    total_debtors = current_user.total_debtors
+    return render_template('dashboard.html', total_amount=total_amount_due, total_debtors=total_debtors)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -60,22 +63,60 @@ def register():
             return render_template('register.html', error='passwords do not match !')
     return render_template('register.html')
 
-
+@login_required
 @app.route('/profile')
 def profile():
     return render_template('profile.html', user=current_user)
 
-@app.route('/add_debtor')
+@login_required
+@app.route('/add_debtor', methods=['GET', 'POST'])
 def add_debtor():
+    if request.method == 'POST':
+        username = request.form.get("username")
+        amount_due = request.form.get("amount_due")
+        description = request.form.get("description")
+
+        if not username or not amount_due:
+            flash('Username and Amount Due are required', 'error')
+            return redirect(url_for('add_debtor'))
+
+        try:
+            amount_due = float(amount_due)
+        except ValueError:
+            flash('Amount due must be a number.', 'error')
+            return redirect(url_for('add_debtor'))
+
+        new_debtor = Debtor(
+                username=username,
+                amount_due=amount_due,
+                description=description,
+                user_id = current_user.id
+                )
+
+        db.session.add(new_debtor)
+        db.session.commit()
+
+        flash('Debtor added Successfully', 'success')
+        return redirect(url_for('add_debtor'))
     return render_template('add_debtor.html')
 
-@app.route('/remove')
-def remove():
+@app.route('/remove/<int:debtor_id>', methods=['GET', 'POST'])
+@login_required
+def remove(debtor_id):
+    debtor = Debtor.query.get(debtor_id)
+    db.session.delete(debtor)
+    db.session.commit()
+
     return redirect(url_for('view_debtor'))
 
+
+@login_required
 @app.route('/view_debtor')
 def view_debtor():
-    return render_template('view_debtor.html')
+    page = request.args.get('page', 1, type=int)
+    per_page = 5
+    debtors = Debtor.query.filter_by(user_id=current_user.id).paginate(page=page, per_page=per_page)
+    return render_template('view_debtor.html', debtors=debtors)
 
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Debtor Management System</title>
-    <link rel="stylesheet" href="styles.css">
+    
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -166,8 +166,8 @@
     <div class="sidebar" id="sidebar">
         <ul>
             <li><a href="{{ url_for('index') }}">Home</a></li>
-	    <li><a href="{{ url_for('profile') }}">Profile</a></li>
-	    <li><a href="{{ url_for('settings') }}">Settings</a></li>
+            <li><a href="{{ url_for('profile') }}">Profile</a></li>
+            <li><a href="{{ url_for('settings') }}">Settings</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
     </div>
@@ -177,12 +177,12 @@
         <div class="cards">
             <div class="card" id="card1">
                 <h3>Total Debtors</h3>
-                <p id="total-debtors">0</p>
+		<p id="total-debtors">0</p>
                 <button onclick="updateTotalDebtors()">Update</button>
             </div>
             <div class="card" id="card2">
                 <h3>Total Amount Due</h3>
-                <p id="total-amount">$0.00</p>
+		<p id="total-amount">$0.0</p>
                 <button onclick="updateTotalAmount()">Update</button>
             </div>
             <div class="card" id="card3">
@@ -198,8 +198,7 @@
     <footer>
         <p>&copy; 2024 Debtor Management System</p>
     </footer>
-
-    <script>
+<script>
         // Function to toggle sidebar visibility
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -208,13 +207,13 @@
 
         // Example interactivity for the dashboard
         function updateTotalDebtors() {
-            const totalDebtors = Math.floor(Math.random() * 100);
+		const totalDebtors = {{ total_debtors }};
             document.getElementById('total-debtors').textContent = totalDebtors;
             changeCardColor('card1');
         }
 
         function updateTotalAmount() {
-            const totalAmount = (Math.random() * 10000).toFixed(2);
+		const totalAmount = {{ total_amount }}.toFixed(2);
             document.getElementById('total-amount').textContent = `$${totalAmount}`;
             changeCardColor('card2');
         }
@@ -222,7 +221,7 @@
         function addNewDebtor() {
             alert('Redirecting to Add New Debtor page...');
             // Simulate navigation
-            window.location.href = '{{ url_for('add_debtor') }}';
+		window.location.href = '{{ url_for('add_debtor') }}';
         }
 
         function viewDebtors() {
@@ -258,3 +257,4 @@
     </script>
 </body>
 </html>
+

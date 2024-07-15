@@ -62,14 +62,12 @@
 	.remember-me-label {
         display: inline;
     }	
-	.flash{
-		color:red;
-		background-color: maroon;
-	}
+	.flash-message {                                      padding: 0.75rem 1rem;                            margin-bottom: 1rem;                              border: 1px solid transparent;                    border-radius: 0.25rem;                       }                                                                                                   .flash-message.success {                              color: #155724;                                   background-color: #d4edda;                        border-color: #c3e6cb;                        }                                                                                                   .flash-message.error {                                color: #721c24;                                   background-color: #f8d7da;                        border-color: #f5c6cb;                        }
     </style>
 </head>
 <body>
     <div class="form-container">
+	    {% with messages = get_flashed_messages(with_categories=true) %}                                    {% if messages %}                                     {% for category, message in messages %}                                                                 <div class="flash-message error">{{ message }}</div>                                   {% endfor %}                                  {% endif %}                                   {% endwith %}
         <h2>Sign In</h2>
         <form id="login-form" action="{{ url_for('login') }}" method="post">
     <input type="email" name="email" placeholder="Email" required>
@@ -78,16 +76,7 @@
         <input type="checkbox" id="remember_me" name="remember_me">
     <button type="submit">Sign In</button>
     <p>Don't have an account? <a href="{{ url_for('register') }}">Sign Up</a></p>
-	</form>
-	{% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="flashes">
-                {% for category, message in messages %}
-                    <li class="flash">{{ message }}</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
+	</form> 
     </div>
 
 <script>
@@ -103,6 +92,8 @@
                 e.target.submit(); // Submit the form if all validations pass
             }
         });
+	// JavaScript to hide flash messages after 5 seconds 
+document.addEventListener("DOMContentLoaded", function() {                                              setTimeout(function() {                               var flashMessages = document.querySelectorAll('.flash-message');                                    flashMessages.forEach(function(message) {                                                               message.style.transition = "opacity 0.5s ease";                                                     message.style.opacity = "0";                      setTimeout(function() {                               message.remove();                             }, 500);                                      });                                           }, 2000);                                     });
     </script>
 </body>
 </html>

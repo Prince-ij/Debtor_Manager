@@ -29,6 +29,16 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    @property
+    def total_amount_due(self):
+        return db.session.query(db.func.sum(
+            Debtor.amount_due)).filter_by(user_id=self.id).scalar() or 0.0
+
+    @property
+    def total_debtors(self):
+        return db.session.query(db.func.count(
+            Debtor.id)).filter_by(user_id=self.id).scalar() or 0
+
     def __repr__(self):
         return f'<User {self.username}>'
 

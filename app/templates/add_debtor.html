@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Debtor - Debtor Management System</title>
-    <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -142,6 +141,24 @@
                 width: 200px;
             }
         }
+	.flash-message {
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+        }
+
+        .flash-message.success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .flash-message.error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
     </style>
 </head>
 <body>
@@ -164,14 +181,21 @@
     </div>
     <!-- Main Content -->
     <div class="container">
+	    {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <div class="form">
-            <form id="addDebtorForm" onsubmit="return false;">
+		<form id="addDebtorForm" action="{{ url_for('add_debtor') }}" method="POST">
                 <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="username" required>
                 <label for="amount">Amount Due:</label>
-                <input type="number" id="amount" name="amount" step="0.01" required>
+                <input type="number" id="amount" name="amount_due" step="0.01" required>
                 <label for="notes">Notes:</label>
-                <textarea id="notes" name="notes" rows="4"></textarea>
+                <textarea id="notes" name="description" rows="4"></textarea>
                 <button type="submit" onclick="submitForm()">Add Debtor</button>
             </form>
         </div>
@@ -179,8 +203,7 @@
     <footer>
         <p>&copy; 2024 Debtor Management System</p>
     </footer>
-
-    <script>
+<script>
         // Function to toggle sidebar visibility
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -196,8 +219,11 @@
             console.log(formData);
             alert('Debtor added successfully!');
             // Example: Redirect or update UI as needed
-		window.location.href = '{{ url_for('dashboard') }}'; // Redirect to dashboard
+            window.location.href = ''; // Redirect to dashboard
         }
+	// JavaScript to hide flash messages after 5 seconds                                               
+ document.addEventListener("DOMContentLoaded", function() {                                              setTimeout(function() {                               var flashMessages = document.querySelectorAll('.flash-message');                                    flashMessages.forEach(function(message) {                                                               message.style.transition = "opacity 0.5s ease";                                                     message.style.opacity = "0";                      setTimeout(function() {                               message.remove();                             }, 500);                                      });                                           }, 2000);                                     });
     </script>
 </body>
 </html>
+

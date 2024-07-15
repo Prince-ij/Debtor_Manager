@@ -132,6 +132,37 @@
                 width: 200px;
             }
         }
+    .pagination {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .pagination a {
+        display: inline-block;
+        padding: 5px 10px;
+        margin: 0 2px;
+        background-color: #007BFF;
+        color: white;
+        text-decoration: none;
+        border-radius: 3px;
+        transition: background-color 0.3s;
+    }
+
+    .pagination a:hover {
+        background-color: #0056b3;
+    }
+
+    .pagination .active {
+        background-color: #0056b3;
+        font-weight: bold;
+    }
+
+    .pagination span {
+        display: inline-block;
+        padding: 5px 10px;
+        margin: 0 2px;
+        color: #aaa;
+    }
     </style>
 </head>
 <body>
@@ -156,44 +187,62 @@
     <div class="container">
         <h2>Debtors List</h2>
         <div class="debtor-list">
+		{% for debtor in debtors %}
             <div class="debtor">
-                <h3>John Doe</h3>
-                <p>Amount Due: $200.00</p>
-                <p>Notes: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                <button class="remove-btn" onclick="removeDebtor(this)">Remove</button>
+		    <h3>{{ debtor.username }}</h3>
+		<p>Amount Due: ${{ debtor.amount_due }}</p>
+		<p>Notes: {{ debtor.description }}</p>
+		<form action="{{ url_for('remove', debtor_id=debtor.id) }}" method="POST" style="display:inline;"> 
+                <button type ="submit" class="remove-btn" onclick="removeDebtor(this)" >Remove</button>
+		</form>
             </div>
-            <div class="debtor">
-                <h3>Jane Smith</h3>
-                <p>Amount Due: $350.00</p>
-                <p>Notes: Nulla facilisi. Sed non libero tristique, faucibus est sit amet, fringilla urna.</p>
-                <button class="remove-btn" onclick="removeDebtor(this)">Remove</button>
-            </div>
-            <div class="debtor">
-                <h3>Another Debtor</h3>
-                <p>Amount Due: $500.00</p>
-                <p>Notes: Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                <button class="remove-btn" onclick="removeDebtor(this)">Remove</button>
-            </div>
-            <!-- Add more debtors as needed -->
+	    {% endfor %} 
+	    </div>
+        <div class="pagination">
+            {% if debtors.has_prev %}
+                <a href="{{ url_for('view_debtor', page=debtors.prev_num) }}">Previous</a>
+            {% endif %}
+            {% for page_num in debtors.iter_pages() %}
+                {% if page_num %}
+                    <a href="{{ url_for('view_debtor', page=page_num) }}">{{ page_num }}</a>
+                {% else %}
+                    <span>...</span>
+                {% endif %}
+            {% endfor %}
+            {% if debtors.has_next %}
+                <a href="{{ url_for('view_debtor', page=debtors.next_num) }}">Next</a>
+            {% endif %}
         </div>
     </div>
     <footer>
         <p>&copy; 2024 Debtor Management System</p>
     </footer>
-
-    <script>
-        // Function to toggle sidebar visibility
-        function toggleSidebar() {
+<script>
+	function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('active');
         }
-
-        // Function to remove a debtor
-        function removeDebtor(button) {
-            // Find the parent .debtor element and remove it
-            const debtorElement = button.parentElement;
-            debtorElement.remove();
-        }
+        // Function to remove a debtor element from the DOM after successful deletion
+        document.querySelectorAll('.remove-btn').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const form = this.closest('form');
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams(new FormData(form))
+                })
+                .then(response => {
+                    if (response.ok) {
+                        form.closest('.debtor').remove();
+                    } else {
+                        alert('Failed to remove debtor');
+                    }
+			});
+            });
+        });
     </script>
 </body>
 </html>
